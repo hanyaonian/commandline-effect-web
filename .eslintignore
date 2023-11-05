@@ -2,6 +2,7 @@ node_modules/
 dist/
 pnpm-lock.yaml
 
+*.config.ts
 *.config.js
 .eslintrc.js
 .eslintrc.cjs

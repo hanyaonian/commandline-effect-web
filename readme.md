@@ -1,4 +1,4 @@
-# Commandline component
+# TERMINAL component
 
 from [post](https://dev.to/ekeijl/retro-crt-terminal-screen-in-css-js-4afh)
 

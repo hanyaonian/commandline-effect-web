@@ -1,10 +1,11 @@
 {
-  "name": "commandline-tools",
+  "name": "terminal-web-coponennt",
   "version": "1.0.0",
-  "description": "A commandline component for web",
+  "description": "A terminal-effect component for web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "dev": "vite",
     "format": "npx prettier ./src --write",
     "prepare": "husky install"
   },
@@ -13,8 +14,8 @@
     "*.{css,sass,scss}": "stylelint"
   },
   "keywords": [
-    "commandline",
-    "web",
+    "terminal",
+    "web component",
     "typescript"
   ],
   "devDependencies": {
@@ -26,7 +27,9 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "stylelint": "^15.11.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
   },
   "author": "michaelHan",
   "license": "ISC"
