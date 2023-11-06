@@ -18,7 +18,11 @@ export class Terminal extends WebComponent {
     el: HTMLElement;
     type_instance: TerminalLine;
   }[] = [];
-  public start_word: string = default_config.box_conifg.start_word;
+
+  public scanline: boolean = default_config.scanline;
+  public speed: number = default_config.speed;
+  public start_word: string = default_config.start_word;
+
   public input_status: "input" | "responding" | "idle" = "idle";
 
   private input_span: HTMLSpanElement;
@@ -32,7 +36,7 @@ export class Terminal extends WebComponent {
     return ["start_word"];
   }
 
-  constructor(private readonly configs: TerminalConfigs = default_config) {
+  constructor() {
     super();
     this.bindKeyBoard();
   }
@@ -79,7 +83,7 @@ export class Terminal extends WebComponent {
     this.shadowRoot.appendChild(this._style_el);
 
     // features
-    if (this.configs.scanline) {
+    if (this.scanline) {
       this.initScanlines();
     }
   }
@@ -107,7 +111,7 @@ export class Terminal extends WebComponent {
     const box = new TerminalLine({
       type: "input",
       el: span_content,
-      speed: default_config.box_conifg.speed,
+      speed: this.speed,
       content: this.start_word,
     });
     box.on("typing", () => {

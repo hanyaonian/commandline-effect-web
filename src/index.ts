@@ -11,5 +11,9 @@ export function init() {
 
 export function createTerminal(configs: TerminalConfigs = default_config) {
   const terminal_box = document.createElement(Terminal.COMPONENT_NAME) as Terminal;
+  Object.keys(configs).forEach((key) => {
+    const val = configs[key];
+    terminal_box.setAttribute(key, val);
+  });
   return terminal_box;
 }
