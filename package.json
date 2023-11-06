@@ -30,11 +30,15 @@
     "sass": "^1.69.5",
     "stylelint": "^15.11.0",
     "typescript": "^5.2.2",
+    "@types/keyboardjs": "^2.5.2",
     "vite": "^4.5.0"
   },
   "author": "michaelHan",
   "license": "ISC",
   "dependencies": {
+    "eventemitter3": "^5.0.1",
+    "keyboardjs": "^2.7.0",
+    "typed.js": "^2.0.16",
     "typeit": "^8.7.1"
   }
 }

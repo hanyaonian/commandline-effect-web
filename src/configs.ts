@@ -1,12 +1,16 @@
 export type TerminalConfigs = {
-  scanline?: {
-    speed: number; // second
+  box_conifg?: {
+    speed: number;
+    start_word: string;
   };
+  scanline?: boolean;
 };
 
 const default_config: TerminalConfigs = {
-  scanline: {
-    speed: 10000,
+  scanline: true,
+  box_conifg: {
+    speed: 50,
+    start_word: "$MICHALE'S MAC:",
   },
 };
 

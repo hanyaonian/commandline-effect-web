@@ -3,8 +3,13 @@
     "target": "es5",
     "module": "ESNext",
     "outDir": "dist",
-    "moduleResolution": "NodeNext"
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.ts", "demo/*.ts"],
-  "exclude": ["node_modules", "dist", "vite.config.ts"]
+  "exclude": ["vite.config.ts"]
 }

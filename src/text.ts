@@ -1,1 +1,0 @@
-import Typeit from "typeit";
