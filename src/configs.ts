@@ -1,9 +1,13 @@
 export type TerminalConfigs = {
-  scanline: boolean;
+  scanline?: {
+    speed: number; // second
+  };
 };
 
 const default_config: TerminalConfigs = {
-  scanline: true,
+  scanline: {
+    speed: 10000,
+  },
 };
 
 export default default_config;
