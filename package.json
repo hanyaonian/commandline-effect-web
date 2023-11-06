@@ -1,6 +1,6 @@
 {
   "name": "terminal-web-coponennt",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A terminal-effect component for web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -38,7 +38,6 @@
   "dependencies": {
     "eventemitter3": "^5.0.1",
     "keyboardjs": "^2.7.0",
-    "typed.js": "^2.0.16",
-    "typeit": "^8.7.1"
+    "typed.js": "^2.0.16"
   }
 }
