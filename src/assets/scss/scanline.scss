@@ -33,6 +33,7 @@ $scan-opacity: 0.75;
 /* CSS .scanlines CLASS */
 
 .scanlines {
+  pointer-events: none;
   position: absolute;
   width: 100%;
   height: 100%;

@@ -3,13 +3,16 @@
     "target": "es5",
     "module": "ESNext",
     "outDir": "dist",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "demo/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "demo/*.ts"],
   "exclude": ["vite.config.ts"]
 }

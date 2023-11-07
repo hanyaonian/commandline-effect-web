@@ -9,7 +9,6 @@ export class TerminalLine extends EventEmitter {
       el: string | HTMLElement | Node;
       content: string;
       speed: number;
-      type: "input" | "respond";
     },
   ) {
     super();

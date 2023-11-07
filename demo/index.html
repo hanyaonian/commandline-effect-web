@@ -10,25 +10,40 @@
         width: 500px;
         height: 500px;
       }
+      .small-container {
+        width: 300px;
+        height: 300px;
+        background-color: aquamarine;
+      }
     </style>
     <title>TERMINAL</title>
   </head>
 
   <body>
-    <div class="container"></div>
-    <button id="create-input">Create Input</button>
-    <br />
-    <button id="create-response">Response</button>
-    <input id="response" />
-    <br />
-    <button id="change-title">Change Start</button>
-    <input id="start-word" value="new word:" />
-    <br />
-    <button id="clear">Clear</button>
-    <br />
-    <button id="get-content">Get content</button>
+    <div style="display: flex">
+      <div style="flex: 1">
+        <div class="container"></div>
+        <button id="create-input">Create Input</button>
+        <br />
+        <button id="create-response">Response</button>
+        <input id="response" value="respond test" />
+        <br />
+        <button id="change-title">Change Start</button>
+        <input id="start-word" value="new word:" />
+        <br />
+        <button id="clear">Clear</button>
+        <br />
+        <button id="get-content">Get content</button>
 
-    <div id="display"></div>
+        <div id="display0"></div>
+      </div>
+      <div style="flex: 1">
+        <div class="small-container">
+          <terminal-box speed="5"></terminal-box>
+          <div id="display1"></div>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="./index.ts" type="module"></script>
 </html>

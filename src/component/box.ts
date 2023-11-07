@@ -1,39 +1,39 @@
 import { WebComponent } from "@/type.d";
 import { TerminalLine } from "./line";
-import { CustomEvents, TerminalBoxEvents } from "./events";
+import { TerminalBoxEvent, TerminalBoxEventsName, TermnialEventsHandler } from "./events";
 import keyboardJS from "keyboardjs";
 import dom from "@/assets/dom.html?raw";
 import box_style from "@/assets/scss/terminal-box.scss?inline";
 import scanline_style from "@/assets/scss/scanline.scss?inline";
-import default_config, { type TerminalConfigs } from "@/configs";
+import default_config from "@/configs";
 
 export class Terminal extends WebComponent {
   static COMPONENT_NAME = "terminal-box";
   static TEMPLATE_ID = "terminal-box";
 
   public records: {
-    id: number;
+    seq: number;
     messge: string;
     type: "input" | "respond";
     el: HTMLElement;
     type_instance: TerminalLine;
   }[] = [];
 
-  public scanline: boolean = default_config.scanline;
-  public speed: number = default_config.speed;
+  public scanline: string;
+  public speed: string = default_config.speed;
   public start_word: string = default_config.start_word;
 
   public input_status: "input" | "responding" | "idle" = "idle";
 
   private input_span: HTMLSpanElement;
-  private msg_id: number = 0;
+  private seq: number = 0;
 
-  private _current_line: HTMLDivElement;
-  private _current_box: TerminalLine;
+  private _current_line_el: HTMLDivElement;
+  private _current_line: TerminalLine;
   private _style_el = document.createElement("style");
 
   static get observedAttributes() {
-    return ["start_word"];
+    return ["start_word", "speed", "scanline"];
   }
 
   constructor() {
@@ -53,15 +53,124 @@ export class Terminal extends WebComponent {
     console.log("adoptedCallback");
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (_oldValue === newValue) {
+      return;
+    }
     if (Terminal.observedAttributes.includes(name)) {
       this[name] = newValue;
     }
-    console.log("attributeChangedCallback: ", name, oldValue, newValue);
+    if (name === "scanline") {
+      this.useScanlines(newValue);
+    }
   }
 
   getRecords() {
     return this.records;
+  }
+
+  public unbind() {
+    this.input_status = "idle";
+  }
+
+  // or createOutput
+  public createRespond(res: string | string[]) {
+    if (this.input_status === "input") {
+      this.endInput();
+    }
+    if (this.input_status === "responding") {
+      return;
+    }
+    let content: string = "";
+    if (Array.isArray(res)) {
+      content = res.join("<br />");
+    }
+    if (typeof res === "string") {
+      content = res;
+    }
+    this.input_status = "responding";
+    const line = this.createNewLine({
+      content,
+      type: "respond",
+    });
+    line.on("complete", () => {
+      this.input_status = "idle";
+      this.records.push({
+        type: "respond",
+        seq: this.seq,
+        messge: content,
+        el: this._current_line_el,
+        type_instance: this._current_line,
+      });
+      this.removeCursor();
+    });
+    line.start();
+  }
+
+  public createInput() {
+    if (this.input_status === "responding") {
+      return;
+    }
+    if (this.input_status === "input") {
+      this.endInput();
+    }
+    this.input_span = document.createElement("span");
+    const line = this.createNewLine({ type: "input" });
+    line.on("complete", () => {
+      this.input_status = "input";
+      const cursor = this.getCursor();
+      cursor?.insertAdjacentElement("beforebegin", this.input_span);
+    });
+    line.start();
+  }
+
+  public clear() {
+    this.records.forEach((record) => {
+      record.type_instance?.clear();
+      record.el?.parentElement?.removeChild(record.el);
+    });
+
+    // TODO: confirm
+    this.records = [];
+  }
+
+  /**
+   * override
+   * addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+   */
+  override addEventListener<K extends keyof TermnialEventsHandler>(
+    type: K,
+    listener: K extends TerminalBoxEventsName ? TermnialEventsHandler[K] : EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): void {
+    super.addEventListener(type, listener, options);
+  }
+
+  private createNewLine(params: { type: "input" | "respond"; content?: string }) {
+    const { type, content } = params;
+    const span_content = document.createElement("span");
+    const content_box = this.shadowRoot.querySelector(".content");
+    const div_container = document.createElement("div");
+    div_container.appendChild(span_content);
+    content_box.appendChild(div_container);
+    // create line
+    const line = new TerminalLine({
+      el: span_content,
+      speed: Number(this.speed),
+      content: type === "input" ? this.start_word : content,
+    });
+    line.on("complete", () => {
+      this.dispatchEvent(new TerminalBoxEvent("typing-finish"));
+    });
+    line.on("typing", () => {
+      this.input_status = "responding";
+      this.dispatchEvent(new TerminalBoxEvent("start-typing"));
+    });
+
+    this._current_line = line;
+    this._current_line_el = div_container;
+
+    return line;
   }
 
   private initDom() {
@@ -80,66 +189,21 @@ export class Terminal extends WebComponent {
 
     // styles
     this._style_el.innerHTML += box_style;
+    this._style_el.innerHTML += scanline_style;
     this.shadowRoot.appendChild(this._style_el);
 
     // features
-    if (this.scanline) {
-      this.initScanlines();
+    this.useScanlines(this.scanline);
+  }
+
+  private useScanlines(use: string) {
+    const scanlines = this.shadowRoot?.querySelector(".scanlines") as HTMLElement;
+    if (scanlines && !use) {
+      scanlines.style.display = "none";
     }
-  }
-
-  public unbind() {
-    this.input_status = "responding";
-  }
-
-  // or createOutput
-  public createRespond() {}
-
-  public createInput() {
-    if (this.input_status === "responding") {
-      return;
+    if (scanlines && use) {
+      scanlines.style.display = "block";
     }
-    if (this.input_status === "input") {
-      this.endInput();
-    }
-    const div_container = document.createElement("div");
-    this.input_span = document.createElement("span");
-    const span_content = document.createElement("span");
-    const content_box = this.shadowRoot.querySelector(".content");
-    div_container.appendChild(span_content);
-    content_box.appendChild(div_container);
-    const box = new TerminalLine({
-      type: "input",
-      el: span_content,
-      speed: this.speed,
-      content: this.start_word,
-    });
-    box.on("typing", () => {
-      this.input_status = "responding";
-    });
-    box.on("complete", () => {
-      this.input_status = "input";
-      const cursor = this.getCursor();
-      cursor?.insertAdjacentElement("beforebegin", this.input_span);
-    });
-    box.start();
-    this._current_box = box;
-    this._current_line = div_container;
-  }
-
-  public clear() {
-    this.records.forEach((record) => {
-      record.type_instance?.clear();
-      record.el?.parentElement?.removeChild(record.el);
-    });
-
-    // TODO: confirm
-    this.records = [];
-  }
-
-  private initScanlines() {
-    // TODO: speed control
-    this._style_el.innerHTML += scanline_style;
   }
 
   private insertChar(char: string) {
@@ -152,12 +216,12 @@ export class Terminal extends WebComponent {
   private endInput() {
     this.records.push({
       type: "input",
-      id: this.msg_id++,
-      type_instance: this._current_box,
+      seq: this.seq++,
+      el: this._current_line_el,
+      type_instance: this._current_line,
       messge: this.input_span?.textContent ?? "",
-      el: this._current_line,
     });
-    this._current_line = null;
+    this._current_line_el = null;
     this.input_span = null;
     this.removeCursor();
   }
@@ -185,7 +249,7 @@ export class Terminal extends WebComponent {
     }
     keyboardJS.bind("enter", () => {
       if (this.input_status === "input") {
-        this.dispatchEvent(new CustomEvents("input-finish", this.input_span.textContent));
+        this.dispatchEvent(new TerminalBoxEvent("input-finish", this.input_span.textContent));
         this.endInput();
       }
     });

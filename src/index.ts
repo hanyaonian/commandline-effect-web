@@ -3,17 +3,21 @@ import default_config, { TerminalConfigs } from "./configs";
 
 export { Terminal };
 export { TerminalLine } from "./component/line";
-export type { TerminalBoxEvents, TermnialEventsHandler } from "./component/events";
+export type { TerminalBoxEventsName, TermnialEventsHandler, TerminalBoxEvent } from "./component/events";
 
-export function init() {
-  customElements.define(Terminal.COMPONENT_NAME, Terminal);
+export async function init() {
+  return window.customElements.whenDefined(Terminal.COMPONENT_NAME);
 }
 
 export function createTerminal(configs: TerminalConfigs = default_config) {
   const terminal_box = document.createElement(Terminal.COMPONENT_NAME) as Terminal;
   Object.keys(configs).forEach((key) => {
     const val = configs[key];
-    terminal_box.setAttribute(key, val);
+    if (!val && !Number.isInteger(val)) {
+      terminal_box.setAttribute(key, "");
+    } else {
+      terminal_box.setAttribute(key, val);
+    }
   });
   return terminal_box;
 }

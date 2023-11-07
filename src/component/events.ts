@@ -1,13 +1,16 @@
-export interface TermnialEventsHandler {
-  "input-finish": (value: string) => void;
-  "typing-finish": () => void;
+export interface TermnialEventsHandler extends HTMLElementEventMap, CustomEvents {}
+
+interface CustomEvents {
+  "input-finish": (this: HTMLElement, event: TerminalBoxEvent<string>) => any;
+  "start-typing": (this: HTMLElement, event: TerminalBoxEvent<void>) => any;
+  "typing-finish": (this: HTMLElement, event: TerminalBoxEvent<void>) => any;
 }
 
-export type TerminalBoxEvents = keyof TermnialEventsHandler;
+export type TerminalBoxEventsName = keyof CustomEvents;
 
-export class CustomEvents<T> extends Event {
+export class TerminalBoxEvent<T> extends Event {
   constructor(
-    name: TerminalBoxEvents,
+    name: TerminalBoxEventsName,
     readonly data?: T,
   ) {
     super(name, {

@@ -10,3 +10,10 @@ npm install
 # demo
 npm run dev
 ```
+
+## TODO
+
+- scrolling
+- budle
+- styled type / color typed
+- color attribute

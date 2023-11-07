@@ -1,56 +1,55 @@
-import { createTerminal } from "../src/index";
+import { Terminal, createTerminal } from "../src/index";
+import { bindCallback, getContentById, display } from "./utils";
 
-function bindCallback(id: string, func: any) {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener("click", func);
-  }
-}
-
-function display(data: any) {
-  const str = JSON.stringify(data);
-  const display = document.querySelector("#display");
-  if (display) {
-    display.innerHTML = str;
-  }
-}
-
-function getContentById(id: string) {
-  const el = document.getElementById(id) as HTMLInputElement;
-  return el?.value ?? "";
-}
-
-function init() {
+insertTerminal();
+function insertTerminal() {
   const terminal_box = createTerminal();
   const container = document.querySelector(".container");
   container?.appendChild(terminal_box);
   return terminal_box;
 }
 
-const box = init();
+const boxs = document.querySelectorAll(Terminal.COMPONENT_NAME);
 
-bindCallback("create-input", () => {
-  box.createInput();
-});
+boxs.forEach((box: Terminal, index: number) => {
+  box.addEventListener("input-finish", (evt) => {
+    display(`Input end: ${evt.data}`, index);
+    if (evt.data === "yaonian") {
+      box.createRespond(["wow", "he is lol master", "better than <span style='color:red;'>Faker</span>"]);
+    }
+  });
 
-bindCallback("response", () => {
-  box.createRespond();
-});
+  box.addEventListener("start-typing", () => {
+    display("typing", index);
+  });
+  box.addEventListener("typing-finish", () => {
+    display("typing finish", index);
+  });
 
-bindCallback("clear", () => {
-  box.clear();
-});
+  bindCallback("create-input", () => {
+    box.createInput();
+  });
 
-bindCallback("get-content", () => {
-  const data = box.getRecords();
-  display(
-    data.map((v) => {
-      delete v.type_instance;
-      return v;
-    }),
-  );
-});
+  bindCallback("create-response", () => {
+    box.createRespond(new Array(10).fill(getContentById("response")));
+  });
 
-bindCallback("change-title", () => {
-  box.setAttribute("start_word", getContentById("start-word"));
+  bindCallback("clear", () => {
+    box.clear();
+  });
+
+  bindCallback("get-content", () => {
+    const data = box.getRecords();
+    display(
+      data.map((v) => {
+        delete v.type_instance;
+        return v;
+      }),
+      index,
+    );
+  });
+
+  bindCallback("change-title", () => {
+    box.setAttribute("start_word", getContentById("start-word"));
+  });
 });
