@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 import { Terminal } from "./component/box";
 import default_config, { TerminalConfigs } from "./configs";
 

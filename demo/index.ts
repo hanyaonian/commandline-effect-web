@@ -1,7 +1,6 @@
 import { Terminal, createTerminal } from "../src/index";
 import { bindCallback, getContentById, display } from "./utils";
 
-insertTerminal();
 function insertTerminal() {
   const terminal_box = createTerminal();
   const container = document.querySelector(".container");
@@ -53,3 +52,5 @@ boxs.forEach((box: Terminal, index: number) => {
     box.setAttribute("start_word", getContentById("start-word"));
   });
 });
+
+insertTerminal();

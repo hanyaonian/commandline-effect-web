@@ -1,4 +1,4 @@
-import { WebComponent } from "@/type.d";
+import { WebComponent } from "../type";
 import { TerminalLine } from "./line";
 import { TerminalBoxEvent, TerminalBoxEventsName, TermnialEventsHandler } from "./events";
 import keyboardJS from "keyboardjs";

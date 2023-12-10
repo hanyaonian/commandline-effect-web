@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "description": "A terminal-effect component for web",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite",
+    "build": "vite build && tsc-alias -p tsconfig.build.json",
     "format": "npx prettier ./src --write",
     "prepare": "husky install"
   },
@@ -21,6 +23,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/keyboardjs": "^2.5.2",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.51.0",
@@ -29,8 +33,9 @@
     "prettier": "^3.0.3",
     "sass": "^1.69.5",
     "stylelint": "^15.11.0",
+    "tsc-alias": "^1.8.8",
+    "tslib": "^2.6.2",
     "typescript": "^5.2.2",
-    "@types/keyboardjs": "^2.5.2",
     "vite": "^4.5.0"
   },
   "author": "michaelHan",

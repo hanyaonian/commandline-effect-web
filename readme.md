@@ -5,15 +5,17 @@ from [post](https://dev.to/ekeijl/retro-crt-terminal-screen-in-css-js-4afh)
 ## Quick Start
 
 ```sh
-npm install
+yarn install
 
 # demo
-npm run dev
+yarn dev
+
+# build
+yarn build
 ```
 
 ## TODO
 
 - scrolling
-- budle
 - styled type / color typed
 - color attribute

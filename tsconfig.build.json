@@ -15,6 +15,5 @@
     },
     "lib": ["DOM"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "demo/*.ts"],
-  "exclude": ["vite.config.ts"]
+  "include": ["src/**/*.ts"]
 }
